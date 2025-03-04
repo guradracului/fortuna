@@ -1,0 +1,44 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 50px;
+}
+
+.wheel-container {
+    position: relative;
+    width: 400px;
+    height: 400px;
+}
+
+.wheel {
+    width: 100%;
+    height: 100%;
+    transition: transform 4s cubic-bezier(0.25, 0.1, 0.25, 1);
+    transform-origin: center; /* Важно! Вращение вокруг центра */
+}
+
+.arrow {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 40px;
+    background: #ff0000;
+    clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+    z-index: 2;
+}
+
+.spin-btn {
+    margin-top: 30px;
+    padding: 15px 30px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.result {
+    margin-top: 20px;
+    font-size: 24px;
+    color: #333;
+}
