@@ -7,8 +7,40 @@
 
 .wheel-container {
     position: relative;
-    width: 400px;
-    height: 400px;
+    width: 600px;
+    height: 600px;
+    margin-bottom: 100px;
+}
+
+.arrow {
+    position: absolute;
+    bottom: -80px; /* Оставляем позицию под колесом */
+    left: 50%;
+    transform: translateX(-50%); /* УБИРАЕМ rotate(180deg) */
+    width: 40px;
+    height: 80px;
+    background: #ff0000;
+    clip-path: polygon(50% 100%, 0% 0%, 100% 0%); /* Инвертируем форму стрелки */
+    z-index: 2;
+    filter: drop-shadow(0 2px 5px rgba(255, 0, 0, 0.3));
+}
+
+/* Обновляем отражение */
+.arrow::after {
+    content: '';
+    position: absolute;
+    top: -100%; /* Меняем направление отражения */
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        to top, /* Инвертируем градиент */
+        rgba(255, 0, 0, 0.3) 0%, 
+        rgba(255, 0, 0, 0.1) 50%, 
+        transparent 100%
+    );
+    clip-path: inherit;
+    transform: scaleY(-1);
 }
 
 .wheel {
@@ -18,27 +50,48 @@
     transform-origin: center; /* Важно! Вращение вокруг центра */
 }
 
-.arrow {
-    position: absolute;
-    top: -20px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 20px;
-    height: 40px;
-    background: #ff0000;
-    clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
-    z-index: 2;
-}
 
 .spin-btn {
-    margin-top: 30px;
-    padding: 15px 30px;
-    font-size: 20px;
+    margin-top: 40px;
+    width: 350px; /* Ширина изображения */
+    height: 150px; /* Высота изображения */
     cursor: pointer;
+    border: none;
+   
+    background: #2196F3;
+    box-shadow: 0 8px 30px rgba(33,150,243,0.5);
+    transition: transform 0.2s;
+    background-color: transparent;
+}
+
+.spin-btn:hover {
+    transform: scale(1.05) rotate(-5deg);
+    background: #1976D2;
+    box-shadow: 0 12px 40px rgba(25,118,210,0.7);
+}
+
+.wheel-container {
+    position: relative;
+    width: 600px; /* Было 500px */
+    height: 600px; /* Было 500px */
+    margin-bottom: 100px; /* Было 80px */
+}
+.wheel {
+    width: 100%;
+    height: 100%;
+    /* Добавьте если нужно "обрезать" края */
+    transform: scale(1.1); /* Увеличение на 10% */
+    /* ИЛИ */
+    margin: -10%; /* Для "выхода за границы" */
+}
+
+.arrow {
+    bottom: -80px; /* Было -60px */
+    width: 40px; /* Было 30px */
+    height: 80px; /* Было 60px */
 }
 
 .result {
-    margin-top: 20px;
-    font-size: 24px;
-    color: #333;
+    bottom: -180px; /* Было -150px */
+    font-size: 36px; /* Было 32px */
 }

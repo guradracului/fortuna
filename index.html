@@ -1,20 +1,193 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Колесо Фортуны</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Исправленные стили */
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 30px;
+            padding: 20px;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+    
+        .wheel-container {
+            position: relative;
+            width: 400px;  /* Уменьшенный размер */
+            height: 400px;
+            margin-bottom: 80px;
+        }
+    
+        .wheel {
+            width: 100%;
+            height: 100%;
+            transform-origin: center;
+            transition: transform 4s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+    
+        .arrow {
+            position: absolute;
+            bottom: -50px; /* Новая позиция */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 60px;
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            background: #ff0000;
+            z-index: 2;
+        }
+    
+        .result {
+            position: relative; /* Изменено с absolute */
+            margin-top: 40px; /* Новый отступ */
+            font-size: 24px;
+            text-align: center;
+            padding: 15px 30px;
+            background: #f8f8f8;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 500px;
+        }
+    
+        .spin-btn {
+            margin-top: 30px;
+            position: relative;
+            z-index: 3; /* Кнопка поверх других элементов */
+        }
+    </style>
+
 </head>
 <body>
     <div class="container">
         <div class="wheel-container">
-            <img src="images/fortune.jpg" id="wheel" class="wheel">
+            <img src="images/fortuna.jpg" id="wheel" class="wheel">
             <div class="arrow"></div>
         </div>
         
-        <button class="spin-btn" onclick="startSpin()">Крутить!</button>
+        <button class="spin-btn" onclick="startSpin()">КРУТИТЬ!</button>
         <div id="result" class="result"></div>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        // 5. Исправленный массив призов
+        const prizes = [
+    "100000 токенов", 
+    "2000 токенов", 
+    "Робот", 
+    "x2 токенов", 
+    "x3 токенов", 
+    "1000 токенов", 
+    "Кулер", 
+    "10000 токенов"
+];
+
+        // 6. Новая точная формула расчета
+        function calculatePrize(finalAngle) {
+            const normalized = ((finalAngle % 360) + 360) % 360;
+            const sectorSize = 360 / prizes.length;
+            return Math.floor((360 - normalized) / sectorSize) % prizes.length;
+        }
+
+        // 7. Исправленная функция вращения
+        let isSpinning = false;
+        function startSpin() {
+            if(isSpinning) return;
+            
+            isSpinning = true;
+            const wheel = document.getElementById('wheel');
+            const sectors = prizes.length;
+            const sectorAngle = 360 / sectors;
+            
+            // Параметры анимации
+            const extraRotations = 5;
+            const targetIndex = Math.floor(Math.random() * sectors);
+            
+            // Точный расчет угла с коррекцией
+            const finalAngle = (extraRotations * 360) + 
+                             (targetIndex * sectorAngle) + 
+                             (sectorAngle / 2) + 
+                             90; // Новая коррекция для стрелки вверху
+
+            // Сброс и запуск анимации
+            wheel.style.transition = 'none';
+            wheel.style.transform = `rotate(${0}deg)`;
+            
+            setTimeout(() => {
+                wheel.style.transition = 'transform 4s cubic-bezier(0.25, 0.1, 0.25, 1)';
+                wheel.style.transform = `rotate(${finalAngle}deg)`;
+            }, 10);
+
+            // Определение результата
+            setTimeout(() => {
+                const actualIndex = calculatePrize(finalAngle);
+                document.getElementById('result').textContent = 
+                    `ВЫ ВЫИГРАЛИ: ${prizes[actualIndex]}!`;
+                isSpinning = false;
+            }, 4050);
+        }
+    </script>
+</body>
+</html>
+
+    <script>
+        // 8 призов - порядок по часовой стрелке
+        const prizes = [
+    "100000 токенов", 
+    "2000 токенов", 
+    "Робот", 
+    "x2 токенов", 
+    "x3 токенов", 
+    "1000 токенов", 
+    "Кулер", 
+    "10000 токенов"
+];
+        
+        let isSpinning = false;
+
+        function calculatePrize() {
+            const wheel = document.getElementById('wheel');
+            const currentRotation = parseFloat(
+                getComputedStyle(wheel).transform.split(',')[3] || 0
+            );
+            
+            // Расчет угла с учетом полных оборотов
+            const normalizedAngle = (currentRotation % 360 + 360) % 360;
+            
+            // 8 секторов по 45 градусов
+            const sectorSize = 360 / prizes.length;
+            return Math.floor((360 - normalizedAngle) / sectorSize) % prizes.length;
+        }
+
+        function startSpin() {
+            if(isSpinning) return;
+            isSpinning = true;
+            
+            const totalSectors = prizes.length;
+            const sectorAngle = 360 / totalSectors; // 45°
+            const extraRotations = 6; // Полных оборотов
+            
+            // Выбор случайного сектора (0-7)
+            const winningSector = Math.floor(Math.random() * totalSectors);
+            
+            // Точный расчет угла для остановки центром сектора под стрелкой
+            const finalAngle = (extraRotations * 360) + 
+                             (winningSector * sectorAngle) + 
+                             (sectorAngle / 2) - 
+                             90; // Корректировка для нижней стрелки
+            
+            const wheel = document.getElementById('wheel');
+            wheel.style.transform = `rotate(${finalAngle}deg)`;
+            
+            // Определение результата после анимации
+            setTimeout(() => {
+                const actualPrizeIndex = calculatePrize();
+                document.getElementById('result').textContent = 
+                    ` ${prizes[actualPrizeIndex]}!`;
+                isSpinning = false;
+            }, 4500);
+        }
+    </script>
 </body>
 </html>
